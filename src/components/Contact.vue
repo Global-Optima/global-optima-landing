@@ -66,8 +66,8 @@ function handleSubmit() {
         <div class="flex flex-col gap-6 text-lg">
           <div v-for="({ icon, label, value }) in infoList" :key="label">
             <div class="flex gap-2 mb-1 items-center">
-              <component :is="{ Building2, Phone, Mail, Clock }[icon]" class="w-5 h-5 text-blue-600" />
-              <span class="font-bold">{{ label }}</span>
+                <component :is="({ Building2, Phone, Mail, Clock } as Record<'Building2' | 'Phone' | 'Mail' | 'Clock', any>)[icon as 'Building2' | 'Phone' | 'Mail' | 'Clock']" class="w-5 h-5 text-blue-600" />
+                <span class="font-bold">{{ label }}</span>
             </div>
             <p>{{ value }}</p>
           </div>

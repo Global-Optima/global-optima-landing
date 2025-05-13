@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useColorMode } from "@vueuse/core";
-const mode = useColorMode();
+import { ref, computed } from 'vue';
+import { useColorMode } from '@vueuse/core';
+import { locale, translations } from '@/composables/useLocale';
 
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+} from '@/components/ui/navigation-menu';
 import {
   Sheet,
   SheetContent,
@@ -16,41 +16,49 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Menu, Code, Mail } from "lucide-vue-next";
-import ToggleTheme from "./ToggleTheme.vue";
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Menu, Code, Mail } from 'lucide-vue-next';
+import ToggleTheme from './ToggleTheme.vue';
+import ToggleLanguage from './ToggleLanguage.vue';
+
+const mode = useColorMode();
+mode.value = 'dark';
 
 interface RouteProps {
   href: string;
   label: string;
 }
-const routeList: RouteProps[] = [
-  { href: "#about-us", label: "About Us" },
-  { href: "#projects",  label: "Projects" },
-  { href: "#services",  label: "Services" },
-  { href: "#careers",   label: "Careers" },
-];
+
+// reactive translations for navbar
+const brand = computed(() => translations[locale.value].navbar.brand);
+const contactLabel = computed(() => translations[locale.value].navbar.contact);
+const getInTouch = computed(() => translations[locale.value].navbar.getInTouch);
+
+const routeList = computed<RouteProps[]>(() => [
+  { href: '#features', label: translations[locale.value].navbar.aboutUs },
+  { href: '#products',  label: translations[locale.value].navbar.projects },
+  { href: '#services',  label: translations[locale.value].navbar.services },
+  { href: '#contact',   label: translations[locale.value].navbar.careers },
+]);
 
 const isOpen = ref(false);
 </script>
 
 <template>
   <header
-    :class="{
-      'shadow-light': mode === 'light',
-      'shadow-dark':  mode === 'dark',
-      'sticky top-5 z-40 mx-auto w-[50%] md:w-[40%] lg:w-[40%] lg:max-w-screen-xl rounded-2xl flex justify-between items-center p-4 bg-white/30 dark:bg-black/30 backdrop-blur-sm border border-white/20 dark:border-black/20':
-        true
-    }"
+    :class="[
+      'sticky top-5 z-40 mx-auto flex w-fit items-center justify-between whitespace-nowrap gap-8 lg:gap-4',
+      'p-4 rounded-2xl bg-white/30 dark:bg-black/30 backdrop-blur-sm border border-white/20 dark:border-black/20',
+      mode === 'light' ? 'shadow-light' : 'shadow-dark'
+    ]"
   >
     <!-- Logo / Brand -->
     <a href="/" class="font-bold text-lg flex items-center">
       <Code
         class="bg-gradient-to-tr from-blue-600 via-blue-500 to-teal-400 p-2 rounded-lg w-9 h-9 mr-2 text-white"
       />
-      GOTech
+      <span>{{ brand }}</span>
     </a>
 
     <!-- Mobile Menu -->
@@ -70,7 +78,7 @@ const isOpen = ref(false);
                 <Code
                   class="bg-gradient-to-tr from-blue-600 via-blue-500 to-teal-400 p-2 rounded-lg w-9 h-9 mr-2 text-white"
                 />
-                GOTech
+                <span>{{ brand }}</span>
               </SheetTitle>
             </SheetHeader>
 
@@ -88,13 +96,18 @@ const isOpen = ref(false);
             </div>
           </div>
 
-          <SheetFooter class="flex-col justify-start items-start">
-            <Separator class="mb-2" />
-            <ToggleTheme />
-            <Button as-child size="sm" variant="ghost" class="mt-2">
-              <a href="#contact" class="flex items-center">
-                <Mail class="w-5 h-5 mr-2" />
-                Contact
+          <SheetFooter class="flex flex-col items-start gap-4">
+            <div class="flex items-center space-x-2">
+              <ToggleTheme />
+            </div>
+            <div class="flex items-center space-x-2">
+              <ToggleLanguage />
+            </div>
+
+            <Button as-child size="sm" variant="ghost" class="">
+              <a href="#contact" class="flex items-center space-x-2 text-white">
+                <Mail class="w-5 h-5 mr-0.5" />
+                <span>{{ contactLabel }}</span>
               </a>
             </Button>
           </SheetFooter>
@@ -121,14 +134,16 @@ const isOpen = ref(false);
     <!-- Actions -->
     <div class="hidden lg:flex items-center space-x-4">
       <ToggleTheme />
+      <ToggleLanguage />
+    
       <Button
         as-child
         size="sm"
         variant="default"
         class="font-bold px-6 py-3 bg-blue-600 hover:bg-blue-400"
       >
-        <a href="#contact">Get in Touch</a>
-      </Button>
+        <a href="#contact" class="text-white">{{ getInTouch }}</a>
+      </Button>      
     </div>
   </header>
 </template>

@@ -21,7 +21,6 @@ const contactForm = reactive({
   firstName: '',
   lastName:  '',
   email:     '',
-  subject:   'Software Development',
   message:   '',
 })
 const invalid   = ref(false)
@@ -30,7 +29,7 @@ const errorMsg  = ref('')
 
 // — Telegram Bot API credentials —
 const TELEGRAM_BOT_TOKEN = '7737221891:AAGJlT0FYwNkKeH2Rm3df_ND6aDJ7S-TTw0'
-const TELEGRAM_CHAT_ID   = '338976952'
+const TELEGRAM_CHAT_ID   = '776450472'
 
 // simple HTML escape
 function escapeHtml(text: string) {
@@ -42,7 +41,7 @@ function escapeHtml(text: string) {
 
 // on submit: send to Telegram
 async function handleSubmit() {
-  const { firstName, lastName, email, subject, message } = contactForm
+  const { firstName, lastName, email, message } = contactForm
 
   if (!firstName || !lastName || !email || !message) {
     invalid.value = true
@@ -64,7 +63,6 @@ async function handleSubmit() {
 <b>⏰ Время:</b> ${time}
 <b>👤 Имя:</b> ${escapeHtml(firstName + ' ' + lastName)}
 <b>✉️ Email:</b> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>
-<b>🏷️ Тема:</b> ${escapeHtml(subject)}
 <b>💬 Сообщение:</b>
 <pre>${escapeHtml(message)}</pre>
   `.trim()
